@@ -21,11 +21,11 @@ export default function App() {
       <Header />
       <Main>
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/letter" element={<SendingLetterPage />} />
-          <Route path="/send" element={<SendingNFTPage />} />
-          <Route path="/generated" element={<GeneratedPage />} />
-          <Route path="/minted" element={<MintedPage />} />
+          <Route path="/ivfm" element={<HomePage />} />
+          <Route path="/ivfm/letter" element={<SendingLetterPage />} />
+          <Route path="/ivfm/send" element={<SendingNFTPage />} />
+          <Route path="/ivfm/generated" element={<GeneratedPage />} />
+          <Route path="/ivfm/minted" element={<MintedPage />} />
         </Routes>
       </Main>
     </ThemeProvider>
