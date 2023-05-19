@@ -1,0 +1,78 @@
+/* Baloo2 */
+@font-face {
+  font-family: 'Baloo 2';
+  font-style: normal;
+  font-weight: 400;
+  src: url(./../assets/fonts/Baloo2-Regular.ttf) format('ttf');
+}
+
+@font-face {
+  font-family: 'Baloo 2';
+  font-style: normal;
+  font-weight: 500;
+  src: url(./../assets/fonts/Baloo2-Medium.ttf) format('ttf');
+}
+
+@font-face {
+  font-family: 'Baloo 2';
+  font-style: normal;
+  font-weight: 600;
+  src: url(./../assets/fonts/Baloo2-SemiBold.ttf) format('ttf');
+}
+
+@font-face {
+  font-family: 'Baloo 2';
+  font-style: normal;
+  font-weight: 700;
+  src: url(./../assets/fonts/Baloo2-Bold.ttf) format('ttf');
+}
+
+@font-face {
+  font-family: 'Baloo 2';
+  font-style: normal;
+  font-weight: 800;
+  src: url(./../assets/fonts/Baloo2-ExtraBold.ttf) format('ttf');
+}
+
+/* DrukaatieBurti */
+@font-face {
+  font-family: 'Drukaatie Burti';
+  font-style: normal;
+  font-weight: 100;
+  src: url(./../assets/fonts/DrukaatieBurti-Thin.ttf) format('ttf');
+}
+
+@font-face {
+  font-family: 'Drukaatie Burti';
+  font-style: normal;
+  font-weight: 300;
+  src: url(./../assets/fonts/DrukaatieBurti-Light.ttf) format('ttf');
+}
+
+@font-face {
+  font-family: 'Drukaatie Burti';
+  font-style: normal;
+  font-weight: 400;
+  src: url(./../assets/fonts/DrukaatieBurti-Regular.ttf) format('ttf');
+}
+
+@font-face {
+  font-family: 'Drukaatie Burti';
+  font-style: normal;
+  font-weight: 500;
+  src: url(./../assets/fonts/DrukaatieBurti-Demi.ttf) format('ttf');
+}
+
+@font-face {
+  font-family: 'Drukaatie Burti';
+  font-style: normal;
+  font-weight: 700;
+  src: url(./../assets/fonts/DrukaatieBurti-Bold.ttf) format('ttf');
+}
+
+@font-face {
+  font-family: 'Drukaatie Burti';
+  font-style: normal;
+  font-weight: 900;
+  src: url(./../assets/fonts/DrukaatieBurti-Heavy.ttf) format('ttf');
+}
