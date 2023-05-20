@@ -8,7 +8,7 @@ export default function Hero() {
     <Container>
       <h2>Empowering Community</h2>
       <p>{'Capturing and Validating Community\'s intangible Values'}</p>
-      <SendLink to="/">
+      <SendLink to="/ivfm/letter">
         Send Blooming Letters
         and Incense kits
       </SendLink>

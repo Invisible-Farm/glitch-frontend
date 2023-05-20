@@ -5,5 +5,11 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
-  "trailing-spaces.trimOnSave": true
+  "trailing-spaces.trimOnSave": true,
+  "cSpell.words": [
+    "Burti",
+    "Drukaatie",
+    "invisiblefarm",
+    "ivfm"
+  ]
 }

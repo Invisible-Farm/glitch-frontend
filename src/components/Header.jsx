@@ -1,9 +1,45 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
+import detectEthereumProvider from '@metamask/detect-provider';
+import { useLocalStorage } from 'usehooks-ts';
+
 import { Logo, Menu } from '../assets/images';
 
+import useUserStore from '../hooks/useUserStore';
+
+import AddressButton from './AddressButton';
+
 export default function Header() {
+  const userStore = useUserStore();
+  const { wallet } = userStore;
+
+  const [accessToken, setAccessToken] = useLocalStorage('accessToken', '');
+
+  const [hasProvider, setHasProvider] = useState(null);
+
+  useEffect(() => {
+    const getProvider = async () => {
+      const provider = await detectEthereumProvider({ silent: true });
+      setHasProvider(Boolean(provider));
+    };
+
+    getProvider();
+  }, []);
+
+  const handleConnect = async () => {
+    const accounts = await window.ethereum.request({
+      method: 'eth_requestAccounts',
+    });
+
+    await userStore.updateWallet(accounts);
+
+    if (userStore.isConnectSuccess) {
+      setAccessToken(accounts[0]);
+    }
+  };
+
   return (
     <Container>
       <HeaderWrapper>
@@ -11,11 +47,35 @@ export default function Header() {
           <button type="button">더보기 버튼</button>
         </MenuWrapper>
         <LogoWrapper>
-          <HomeLink to="/">Invisible Farm</HomeLink>
+          <HomeLink to="/ivfm">Invisible Farm</HomeLink>
         </LogoWrapper>
-        <ButtonWrapper>
-          <button type="button">Connect Wallet</button>
-        </ButtonWrapper>
+        {accessToken ? (
+          <ButtonWrapper>
+            <AddressButton
+              type="button"
+              address={accessToken}
+            />
+          </ButtonWrapper>
+        ) : (
+          <ButtonWrapper>
+            { hasProvider && wallet.accounts.length <= 0
+        && (
+          <ConnectButton
+            type="button"
+            onClick={handleConnect}
+          >
+            Connect Wallet
+          </ConnectButton>
+        )}
+            { wallet.accounts.length > 0
+        && (
+          <AddressButton
+            type="button"
+            address={wallet.accounts[0]}
+          />
+        )}
+          </ButtonWrapper>
+        )}
       </HeaderWrapper>
     </Container>
   );
@@ -68,7 +128,6 @@ const ButtonWrapper = styled.div`
   button {
     color: #fff;
     border-radius: 2em;
-    background-color: ${(({ theme }) => theme.colors.secondary)};
     box-shadow: 7px 7px 8px rgba(0, 0, 0, 0.5);
 
     width: 227px;
@@ -78,4 +137,8 @@ const ButtonWrapper = styled.div`
     font-weight: 600;
     font-size: 26px;
   }
+`;
+
+const ConnectButton = styled.button`
+  background-color: ${(({ theme }) => theme.colors.secondary)};
 `;

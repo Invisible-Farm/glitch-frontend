@@ -12,7 +12,7 @@ export default function MintedPage() {
         <br />
         Go to your inventory and check out your NFTs and letters.
       </p>
-      <StyledLink to="/inventory">
+      <StyledLink to="/ivfm/inventory">
         Go to my inventory
       </StyledLink>
     </Container>

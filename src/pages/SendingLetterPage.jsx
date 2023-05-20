@@ -1,9 +1,33 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import styled from 'styled-components';
 
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { Petal } from '../assets/images';
+import { apiService } from '../services/ApiService';
 
 export default function SendingLetterPage() {
+  const navigate = useNavigate();
+
+  const handleClickNext = () => {
+    navigate('/ivfm/send');
+  };
+
+  const [incenseList, setIncenseList] = useState();
+  const [communityList, setCommunityList] = useState();
+
+  useEffect(() => {
+    async function fetchData() {
+      const { data: incenses } = await apiService.fetchIncenses();
+      const { data: communities } = await apiService.fetchCommunities();
+
+      setIncenseList(incenses);
+      setCommunityList(communities);
+    }
+
+    fetchData();
+  }, []);
+
   return (
     <Container>
       <Title>
@@ -24,7 +48,12 @@ export default function SendingLetterPage() {
           <form>
             <div>
               <label htmlFor="input-community">Community:</label>
-              <input type="text" id="input-community" />
+              <select name="values" id="input-community">
+                <option value="" selected>Select your community</option>
+                {communityList?.map((item) => (
+                  <option key={item.id} value={item.name}>{item.name}</option>
+                ))}
+              </select>
             </div>
             <div>
               <label htmlFor="input-from">From:</label>
@@ -36,7 +65,12 @@ export default function SendingLetterPage() {
             </div>
             <div>
               <label htmlFor="input-by">Value created by him/her:</label>
-              <input type="text" id="input-by" />
+              <select name="values" id="input-by">
+                <option value="" selected>Please select one</option>
+                {incenseList?.map((item) => (
+                  <option key={item.id} value={item.name}>{item.name}</option>
+                ))}
+              </select>
             </div>
             <div>
               <fieldset>
@@ -93,7 +127,12 @@ export default function SendingLetterPage() {
         </OutputWrapper>
       </LetterWrapper>
       <ButtonWrapper>
-        <NextButton type="button">NEXT</NextButton>
+        <NextButton
+          type="button"
+          onClick={handleClickNext}
+        >
+          NEXT
+        </NextButton>
       </ButtonWrapper>
     </Container>
   );
@@ -101,6 +140,10 @@ export default function SendingLetterPage() {
 
 const Container = styled.div`
   padding: 50px 100px;
+
+  select option {
+    color: white;
+  }
 `;
 
 const Title = styled.div`

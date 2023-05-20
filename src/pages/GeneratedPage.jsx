@@ -1,6 +1,13 @@
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 export default function GeneratedPage() {
+  const navigate = useNavigate();
+
+  const handleClickMint = () => {
+    navigate('/ivfm/minted');
+  };
+
   return (
     <Container>
       <Title>
@@ -11,32 +18,37 @@ export default function GeneratedPage() {
         </p>
       </Title>
       <Wrapper>
-        <h2>🎉</h2>
-        <h3>Congratulations!</h3>
+        <h3>SHARE CLAIM LINK</h3>
         <p>
-          The Incense NFT and PROOF OF VALUE SBT have been successfully generated.
+          Share the below link with allowlisted person so they can view letter and claim their NFTs
           <br />
-          {'Don\'t forget to share the link with the recipient!'}
         </p>
         <ClipBoardSection>
           <p>
             {`Hey there! My friend (recipient's name)! I've sent you a Blooming Letter
           along with an INCENSE NFT and PROOF OF VALUE SBT as a gift!
           Please check them out on the Invisible Farm website through
-          the link below.→ www.invisiblefarm.xyz/minting/1`}
+          the link below.`}
+            <br />
+            → www.invisiblefarm.xyz/minting/1
           </p>
           <button type="button">COPY</button>
         </ClipBoardSection>
         <p>
-          Lastly, we would like to present the participants with
-          a GRATITUDE NFT as a token of appreciation.
+          Lastly, we would like to present the participants with a
+          GRATITUDE NFT as a token of appreciation.
           <br />
           <br />
-          This NFT can also serve as a membership feature within Invisible.
+          This NFT can also serve as a membership feature within Invisible Farm.
         </p>
       </Wrapper>
       <ButtonWrapper>
-        <SendButton type="button">Mint the Gratitude NFT</SendButton>
+        <SendButton
+          type="button"
+          onClick={handleClickMint}
+        >
+          Mint the Gratitude NFT
+        </SendButton>
       </ButtonWrapper>
     </Container>
   );
@@ -83,21 +95,23 @@ const Wrapper = styled.div`
 
   p {
     font-size: 20px;
-    width: 600px;
+    width: 800px;
   }
 `;
 
 const ClipBoardSection = styled.div`
   text-align: right;
-
+  
   p {
     background-color: ${(({ theme }) => theme.colors.pink3)};
 
+    width: 550px;
     margin-top: 20px;
     padding: 10px;
 
     font-weight: 300;
     text-align: left;
+    line-height: 1.4;
   }
 
   button {

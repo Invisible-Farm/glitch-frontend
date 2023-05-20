@@ -12,6 +12,7 @@ const theme = {
     pink2: '#e2768a',
     pink3: '#f2b8c4',
     pink4: '#e17689',
+    pink5: '#f8a1b2',
     gray: '#828282',
     letterBackground: '#f1efef',
     border: '#cecece',
