@@ -6,7 +6,6 @@ export default class LetterFormStore extends Store {
 
     this.fields = {
       community: '',
-      from: '',
       to: '',
       value: '',
       response: '',
@@ -15,7 +14,6 @@ export default class LetterFormStore extends Store {
 
     this.isEmpty = {
       community: true,
-      from: true,
       to: true,
       value: true,
       response: true,

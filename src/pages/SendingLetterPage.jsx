@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { useLocalStorage } from 'usehooks-ts';
 import { Petal } from '../assets/images';
 import { apiService } from '../services/ApiService';
 
@@ -14,10 +15,15 @@ export default function SendingLetterPage() {
   const letterFormStore = useLetterFormStore();
   const { fields } = letterFormStore;
 
+  const [accessToken] = useLocalStorage('accessToken', '');
+  const [, setLetterContent] = useLocalStorage('letterContent', '');
+
   const handleClickNext = () => {
     if (letterFormStore.isValidateFailed()) {
       return;
     }
+
+    setLetterContent(JSON.stringify(fields));
 
     navigate('/ivfm/send');
   };
@@ -90,6 +96,8 @@ export default function SendingLetterPage() {
             <div className="answers">
               <label htmlFor="input-from">From:</label>
               <input
+                readOnly
+                value={accessToken}
                 type="text"
                 id="input-from"
                 className="inputs"
@@ -189,7 +197,7 @@ export default function SendingLetterPage() {
             <dl>
               <div className="dl-wrapper">
                 <dt>From:</dt>
-                <dd>{fields.from}</dd>
+                <dd>{accessToken}</dd>
               </div>
               <div className="dl-wrapper">
                 <dt>To:</dt>
@@ -290,7 +298,7 @@ const Form = styled.form`
   .inputs {
     border: 1px solid #c1c1c1;
     border-radius: 5px;
-    width: 200px;
+    width: 80%;
     font-size: 18px;
 
     font-family: 'Drukaatie Burti';
@@ -373,6 +381,8 @@ const Output = styled.div`
     align-items: center;
 
     font-weight: 300;
+
+    overflow: hidden;
   }
 
   .dl-wrapper + .dl-wrapper {
