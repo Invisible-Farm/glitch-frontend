@@ -3,7 +3,7 @@ This service is the frontend service for the IVFM service.
 
 It is implemented using React.js as the underlying framework.
 
-You can check the demo of this website through http://1.234.5.209/ivfm/.
+You can check the demo website.
 
 
 
