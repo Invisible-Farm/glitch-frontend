@@ -9,9 +9,9 @@ import { apiService } from '../services/ApiService';
 export default function SendingNFTPage() {
   const [accessToken] = useLocalStorage('accessToken', '');
   const [letterContent] = useLocalStorage('letterContent', '');
-  const [giftTokens, setGiftTokens] = useLocalStorage('giftTokens', '');
+  const [giftTokens, setGiftTokens] = useLocalStorage('giftTokens', '{}');
 
-  const typeValue = JSON.parse(letterContent);
+  const letter = JSON.parse(letterContent);
 
   const navigate = useNavigate();
 
@@ -22,7 +22,7 @@ export default function SendingNFTPage() {
     setIsOpen(!isOpen);
   };
 
-  const incenseItem = incenseList?.filter((incense) => incense.name === typeValue.value);
+  const incenseItem = incenseList?.filter((incense) => incense.name === letter.value);
 
   let web3;
   if (window.ethereum) {
@@ -42,16 +42,19 @@ export default function SendingNFTPage() {
         method: 'eth_sendTransaction',
         params: [
           {
-            from: '0xF6493BA10B568318ddAB28176C6DF090A48f8fdF',
-            to: '0xF6493BA10B568318ddAB28176C6DF090A48f8fdF',
+            from: accessToken,
+            to: letter.to,
             value: '11C37937E08000',
             gas: '0x5208',
           },
         ],
       })
-      .then((txHash) => console.log(txHash));
-
-    navigate('/ivfm/generated');
+      .then((txHash) => console.log(txHash))
+      .then(() => {
+        setTimeout(() => {
+          navigate('/ivfm/generated');
+        }, 300);
+      });
   };
 
   const handleClickRegenerate = async () => {
@@ -122,7 +125,7 @@ export default function SendingNFTPage() {
             <span>
               Type:
               {' '}
-              {typeValue.value}
+              {letter.value}
             </span>
             <ImageWrapper>
               <img src={images.incenseImage} alt="Incense NFT preview" />
@@ -140,7 +143,7 @@ export default function SendingNFTPage() {
             <span>
               Type:
               {' '}
-              {typeValue.value}
+              {letter.value}
             </span>
             <ImageWrapper>
               <img src={images.proofOfValueImage} alt="Proof of Value SBT preview" />
@@ -168,7 +171,7 @@ export default function SendingNFTPage() {
                 <li key="Proof of Value SBT">Proof of Value SBT</li>
               </ul>
               <h4>TYPE:</h4>
-              <p className="desc">{typeValue.value}</p>
+              <p className="desc">{letter.value}</p>
               <h4>PRICE:</h4>
               <p className="desc">5 matic</p>
               <button

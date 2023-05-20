@@ -26,7 +26,7 @@ export default function LoginPage() {
             height: 300,
             colorDark: '#000',
             colorLight: '#e9e9e9',
-            correctLevel: window.QRCodeCorrectLevel.H,
+            correctLevel: window.QRCode.CorrectLevel.H,
           });
           handleDisplay(qrCodeEl, true);
         })

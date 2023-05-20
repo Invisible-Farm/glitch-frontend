@@ -18,10 +18,6 @@ export default function GeneratedPage() {
       const gift = JSON.parse(giftTokens);
       const letter = JSON.parse(letterContent);
 
-      console.log(' >>>>>', accessToken);
-      console.log('gift >>>>>', gift);
-      console.log('letter >>>>>', letter);
-
       const { data: communities } = await apiService.fetchCommunities();
       const { data: incenses } = await apiService.fetchIncenses();
 
