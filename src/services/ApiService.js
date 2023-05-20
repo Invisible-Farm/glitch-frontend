@@ -27,6 +27,20 @@ export default class ApiService {
 
     return data;
   }
+
+  async fetchIncenseNFT(incenseId) {
+    const { data } = await this.instance.get(`/file/incense/${incenseId}`);
+
+    console.log(data);
+
+    return { data };
+  }
+
+  async postNFTs(body) {
+    const { data } = await this.instance.post('/recommand', body);
+
+    return data;
+  }
 }
 
 export const apiService = new ApiService();

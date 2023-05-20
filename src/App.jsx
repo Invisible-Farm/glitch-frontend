@@ -15,6 +15,7 @@ import SendingNFTPage from './pages/SendingNFTPage';
 import GeneratedPage from './pages/GeneratedPage';
 import MintedPage from './pages/MintedPage';
 import InventoryPage from './pages/InventoryPage';
+import LoginPage from './pages/LoginPage';
 
 import { apiService } from './services/ApiService';
 
@@ -38,6 +39,7 @@ export default function App() {
           <Route path="/ivfm/generated" element={<GeneratedPage />} />
           <Route path="/ivfm/minted" element={<MintedPage />} />
           <Route path="/ivfm/inventory" element={<InventoryPage />} />
+          <Route path="/ivfm/login" element={<LoginPage />} />
         </Routes>
       </Main>
     </ThemeProvider>

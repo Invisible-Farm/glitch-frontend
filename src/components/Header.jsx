@@ -125,20 +125,21 @@ const HomeLink = styled(Link)`
 `;
 
 const ButtonWrapper = styled.div`
-  button {
-    color: #fff;
-    border-radius: 2em;
-    box-shadow: 7px 7px 8px rgba(0, 0, 0, 0.5);
-
-    width: 227px;
-    height: 64px;
-
-    font-family: 'Baloo 2';
-    font-weight: 600;
-    font-size: 26px;
-  }
 `;
 
-const ConnectButton = styled.button`
+const Button = styled.button`
+  color: #fff;
+  border-radius: 2em;
+  box-shadow: 7px 7px 8px rgba(0, 0, 0, 0.5);
+
+  width: 227px;
+  height: 64px;
+
+  font-family: 'Baloo 2';
+  font-weight: 600;
+  font-size: 26px;
+`;
+
+const ConnectButton = styled(Button)`
   background-color: ${(({ theme }) => theme.colors.secondary)};
 `;

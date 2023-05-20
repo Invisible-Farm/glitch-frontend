@@ -1,10 +1,56 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { useLocalStorage } from 'usehooks-ts';
+import { useEffect, useState } from 'react';
+import { apiService } from '../services/ApiService';
 
 export default function GeneratedPage() {
   const navigate = useNavigate();
 
-  const handleClickMint = () => {
+  const [postData, setPostData] = useState();
+
+  const [accessToken] = useLocalStorage('accessToken', '');
+  const [giftTokens] = useLocalStorage('giftTokens', '');
+  const [letterContent] = useLocalStorage('letterContent', '');
+
+  useEffect(() => {
+    async function generateData() {
+      const gift = JSON.parse(giftTokens);
+      const letter = JSON.parse(letterContent);
+
+      console.log(' >>>>>', accessToken);
+      console.log('gift >>>>>', gift);
+      console.log('letter >>>>>', letter);
+
+      const { data: communities } = await apiService.fetchCommunities();
+      const { data: incenses } = await apiService.fetchIncenses();
+
+      const communityInfo = communities?.filter((item) => item.name === letter.community);
+      const incenseInfo = incenses?.filter((item) => item.name === letter.value);
+
+      const data = {
+        communityId: communityInfo[0].id,
+        from: accessToken,
+        to: accessToken,
+        incenseUuid: incenseInfo[0].id,
+        incenseImgUuid: gift.incenseImageId,
+        profOfValueUuid: gift.proofOfValueMovieId,
+        profOfValueSumnailUuid: gift.proofOfValueImageId,
+        story: letter.story,
+        myResponse: letter.response,
+      };
+
+      setPostData(data);
+    }
+
+    generateData();
+  }, []);
+
+  const handleClickMint = async () => {
+    const data = await apiService.postNFTs(postData);
+
+    console.log(data);
+
     navigate('/ivfm/minted');
   };
 

@@ -3,13 +3,28 @@ import styled from 'styled-components';
 
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { useLocalStorage } from 'usehooks-ts';
 import { Petal } from '../assets/images';
 import { apiService } from '../services/ApiService';
+
+import useLetterFormStore from '../hooks/useLetterFormStore';
 
 export default function SendingLetterPage() {
   const navigate = useNavigate();
 
+  const letterFormStore = useLetterFormStore();
+  const { fields } = letterFormStore;
+
+  const [accessToken] = useLocalStorage('accessToken', '');
+  const [, setLetterContent] = useLocalStorage('letterContent', '');
+
   const handleClickNext = () => {
+    if (letterFormStore.isValidateFailed()) {
+      return;
+    }
+
+    setLetterContent(JSON.stringify(fields));
+
     navigate('/ivfm/send');
   };
 
@@ -21,7 +36,19 @@ export default function SendingLetterPage() {
       const { data: incenses } = await apiService.fetchIncenses();
       const { data: communities } = await apiService.fetchCommunities();
 
-      setIncenseList(incenses);
+      const sortedIncenses = incenses.sort((a, b) => {
+        if (a.useYn === b.useYn) {
+          return 0;
+        }
+
+        if (a.useYn === 'y' && b.useYn === null) {
+          return -1;
+        }
+
+        return 1;
+      });
+
+      setIncenseList(sortedIncenses);
       setCommunityList(communities);
     }
 
@@ -45,38 +72,89 @@ export default function SendingLetterPage() {
             Leave a letter expressing gratitude, respect, compliment, or smile
             for the value created by that person.
           </p>
-          <form>
-            <div>
+          <Form>
+            <div className="answers">
               <label htmlFor="input-community">Community:</label>
-              <select name="values" id="input-community">
+              <select
+                name="values"
+                id="input-community"
+                onChange={(e) => letterFormStore.changeField((
+                  { community: e.target.value }))}
+              >
                 <option value="" selected>Select your community</option>
                 {communityList?.map((item) => (
-                  <option key={item.id} value={item.name}>{item.name}</option>
+                  <option
+                    key={item.id}
+                    value={item.name}
+                    className="inputs"
+                  >
+                    {item.name}
+                  </option>
                 ))}
               </select>
             </div>
-            <div>
+            <div className="answers">
               <label htmlFor="input-from">From:</label>
-              <input type="text" id="input-from" />
+              <input
+                readOnly
+                value={accessToken}
+                type="text"
+                id="input-from"
+                className="inputs"
+                onChange={(e) => letterFormStore.changeField((
+                  { from: e.target.value }))}
+              />
             </div>
-            <div>
+            <div className="answers">
               <label htmlFor="input-to">To:</label>
-              <input type="text" id="input-to" />
+              <input
+                type="text"
+                id="input-to"
+                className="inputs"
+                onChange={(e) => letterFormStore.changeField((
+                  { to: e.target.value }))}
+              />
             </div>
-            <div>
-              <label htmlFor="input-by">Value created by him/her:</label>
-              <select name="values" id="input-by">
-                <option value="" selected>Please select one</option>
+            <div className="answers">
+              <label htmlFor="input-value">Value created by him/her:</label>
+              <select
+                name="values"
+                id="input-value"
+                onChange={(e) => letterFormStore.changeField((
+                  { value: e.target.value }))}
+              >
+                <option value="" selected className="inputs">Please select one</option>
                 {incenseList?.map((item) => (
-                  <option key={item.id} value={item.name}>{item.name}</option>
+                  item.useYn === 'y' ? (
+                    <option
+                      key={item.id}
+                      value={item.name}
+                      className="inputs"
+                    >
+                      {item.name}
+
+                    </option>
+                  ) : (
+                    <option
+                      key={item.id}
+                      value={item.name}
+                      className="inputs"
+                      disabled
+                    >
+                      {`${item.name} (미지원)`}
+                    </option>
+                  )
                 ))}
               </select>
             </div>
-            <div>
-              <fieldset>
+            <div className="answers">
+              <fieldset
+                onChange={(e) => letterFormStore.changeField((
+                  { response: e.target.value }))}
+              >
                 <legend>My response:</legend>
                 <div>
-                  <input type="radio" id="gratitude" name="response" value="gratitude" checked />
+                  <input type="radio" id="gratitude" name="response" value="gratitude" />
                   <label htmlFor="gratitude">Gratitude</label>
                 </div>
                 <div>
@@ -93,11 +171,17 @@ export default function SendingLetterPage() {
                 </div>
               </fieldset>
             </div>
-            <div>
+            <div className="answers">
               <label htmlFor="input-story">Story:</label>
-              <textarea id="input-story" />
+              <textarea
+                id="input-story"
+                placeholder="Elaborate your experience with them."
+                className="inputs"
+                onChange={(e) => letterFormStore.changeField((
+                  { story: e.target.value }))}
+              />
             </div>
-          </form>
+          </Form>
         </Input>
         <OutputWrapper>
           <Output>
@@ -111,16 +195,26 @@ export default function SendingLetterPage() {
               for the value created by that person.
             </p>
             <dl>
-              <dt>From:</dt>
-              <dd>{}</dd>
-              <dt>To:</dt>
-              <dd>{}</dd>
-              <dt>Value created by him/her:</dt>
-              <dd>{}</dd>
-              <dt>My response:</dt>
-              <dd>{}</dd>
-              <dt>story:</dt>
-              <dd>{}</dd>
+              <div className="dl-wrapper">
+                <dt>From:</dt>
+                <dd>{accessToken}</dd>
+              </div>
+              <div className="dl-wrapper">
+                <dt>To:</dt>
+                <dd>{fields.to}</dd>
+              </div>
+              <div className="dl-wrapper">
+                <dt>Value created by him/her:</dt>
+                <dd>{fields.value}</dd>
+              </div>
+              <div className="dl-wrapper">
+                <dt>My response:</dt>
+                <dd>{fields.response}</dd>
+              </div>
+              <div className="dl-wrapper story-output-wrapper">
+                <dt>story:</dt>
+                <dd>{fields.story}</dd>
+              </div>
             </dl>
           </Output>
           <em>Preview Image</em>
@@ -195,6 +289,44 @@ const Input = styled.div`
   }
 `;
 
+const Form = styled.form`
+  label, legend {
+    font-weight: 300;
+    font-size: 20px;
+  }
+
+  .inputs {
+    border: 1px solid #c1c1c1;
+    border-radius: 5px;
+    width: 80%;
+    font-size: 18px;
+
+    font-family: 'Drukaatie Burti';
+    font-weight: 300;
+    color: ${(({ theme }) => theme.colors.pink)};
+    padding: 5px 8px;
+  }
+
+  .answers + .answers {
+    margin-top: 5px;
+  }
+
+  textarea {
+    width: 100% !important;
+    height: 150px;
+    font-size: 16px !important;
+    resize: none;
+  }
+
+  textarea::placeholder {
+    color: ${(({ theme }) => theme.colors.pink)};
+  }
+
+  option {
+/*  */
+  }
+`;
+
 const OutputWrapper = styled.div`
   position: relative;
 
@@ -228,6 +360,7 @@ const Output = styled.div`
 
   width: 400px;
   height: 500px;
+  padding: 20px;
 
   border: 1px solid ${(({ theme }) => theme.colors.pink3)};
 
@@ -240,6 +373,45 @@ const Output = styled.div`
   p {
     margin-block: 20px;
     text-align: center;
+  }
+
+  .dl-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    font-weight: 300;
+
+    overflow: hidden;
+  }
+
+  .dl-wrapper + .dl-wrapper {
+    margin-top: 10px;
+  }
+
+  dt, dd {
+    display: inline-block;
+  }
+
+  dd {
+    border: 1px solid red;
+    border-style: dotted;
+    width: 180px;
+    height: 20px;
+  }
+
+  .story-output-wrapper {
+    display: block;
+    text-align: left;
+
+    dd {
+      display: block;
+      
+      width: 100%;
+      height: 100px;
+      margin-top: 10px;
+      padding: 5px;
+    }
   }
 `;
 

@@ -1,19 +1,90 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Web3 from 'web3';
 import styled from 'styled-components';
 
+import { useLocalStorage } from 'usehooks-ts';
+import { apiService } from '../services/ApiService';
+
 export default function SendingNFTPage() {
+  const [accessToken] = useLocalStorage('accessToken', '');
+  const [letterContent] = useLocalStorage('letterContent', '');
+  const [giftTokens, setGiftTokens] = useLocalStorage('giftTokens', '');
+
+  const typeValue = JSON.parse(letterContent);
+
   const navigate = useNavigate();
 
   const [isOpen, setIsOpen] = useState(false);
+  const [incenseList, setIncenseList] = useState([]);
 
   const toggleModal = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleClickSend = () => {
+  const incenseItem = incenseList?.filter((incense) => incense.name === typeValue.value);
+
+  let web3;
+  if (window.ethereum) {
+    web3 = new Web3(window.ethereum);
+
+    // console.log(web3);
+  }
+
+  const handleClickSend = async () => {
+    const message = 'ITEM: \nBlooming Letter\nIncense NFT\nProof of Value SBT\n\nTYPE: \nPassion\n\nPRICE: \n5 matic';
+
+    const signature = await web3.eth.personal.sign(message, accessToken, 'hello!');
+    console.log(signature);
+
+    window.ethereum
+      .request({
+        method: 'eth_sendTransaction',
+        params: [
+          {
+            from: '0xF6493BA10B568318ddAB28176C6DF090A48f8fdF',
+            to: '0xF6493BA10B568318ddAB28176C6DF090A48f8fdF',
+            value: '11C37937E08000',
+            gas: '0x5208',
+          },
+        ],
+      })
+      .then((txHash) => console.log(txHash));
+
     navigate('/ivfm/generated');
   };
+
+  const handleClickRegenerate = async () => {
+    const { data: item } = await apiService.fetchIncenseNFT(incenseItem[0].id);
+
+    setGiftTokens(JSON.stringify(item));
+  };
+
+  useEffect(() => {
+    async function fetchData() {
+      const { data: incenses } = await apiService.fetchIncenses();
+
+      setIncenseList(incenses);
+    }
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    async function fetchImage() {
+      console.log(incenseList);
+
+      if (incenseList.length > 0) {
+        const { data: item } = await apiService.fetchIncenseNFT(incenseItem[0].id);
+
+        setGiftTokens(JSON.stringify(item));
+      }
+    }
+
+    fetchImage();
+  }, [incenseList]);
+
+  const images = JSON.parse(giftTokens);
 
   return (
     <Container isOpen={isOpen}>
@@ -48,17 +119,31 @@ export default function SendingNFTPage() {
         <Outputs>
           <div>
             <p>Incense NFT</p>
-            <span>Type: Passion</span>
+            <span>
+              Type:
+              {' '}
+              {typeValue.value}
+            </span>
             <ImageWrapper>
-              {/* <img src="" alt="Incense NFT preview" /> */}
+              <img src={images.incenseImage} alt="Incense NFT preview" />
             </ImageWrapper>
-            <button type="button">Regenerate</button>
+            <button
+              type="button"
+              onClick={handleClickRegenerate}
+            >
+              Regenerate
+
+            </button>
           </div>
           <div>
             <p>Proof of Value SBT</p>
-            <span>Type: Passion</span>
+            <span>
+              Type:
+              {' '}
+              {typeValue.value}
+            </span>
             <ImageWrapper>
-              {/* <img src="" alt="Proof of Value SBT preview" /> */}
+              <img src={images.proofOfValueImage} alt="Proof of Value SBT preview" />
             </ImageWrapper>
           </div>
         </Outputs>
@@ -83,7 +168,7 @@ export default function SendingNFTPage() {
                 <li key="Proof of Value SBT">Proof of Value SBT</li>
               </ul>
               <h4>TYPE:</h4>
-              <p className="desc">Passion</p>
+              <p className="desc">{typeValue.value}</p>
               <h4>PRICE:</h4>
               <p className="desc">5 matic</p>
               <button
@@ -193,6 +278,11 @@ const ImageWrapper = styled.div`
   height: 300px;
 
   border: 1px solid ${(({ theme }) => theme.colors.border)};
+
+  img {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 const ButtonWrapper = styled.div`
