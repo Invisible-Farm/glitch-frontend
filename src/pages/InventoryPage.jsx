@@ -1,11 +1,8 @@
 import styled from 'styled-components';
-import InventoryNav from '../components/InventoryNav';
 
 export default function InventoryPage() {
   return (
-    <Container>
-      <InventoryNav />
-    </Container>
+    <Container />
   );
 }
 
