@@ -1,10 +1,7 @@
 ## glitch-frontend
 This service is the frontend service for the IVFM service.
-
 It is implemented using React.js as the underlying framework.
-
-You can check the demo website.
-
+It was developed to interact with the blockchain using the metamask sdk and web3.
 
 
 Dependencies
