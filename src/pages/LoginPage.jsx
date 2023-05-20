@@ -1,46 +1,37 @@
 /* eslint-disable no-param-reassign */
-import { useEffect, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { QRCodeSVG } from 'qrcode.react';
 
 export default function LoginPage() {
   const baseUrl = 'http://3.26.13.71:10011';
-
-  function handleDisplay(el, needShow, display = 'block') {
-    el.style.display = needShow ? display : 'none';
-  }
-
-  const qrCodeRef = useRef(null);
+  const [qrData, setQrData] = useState('');
 
   useEffect(() => {
-    if (qrCodeRef.current) {
-      const qrCodeEl = document.querySelector('#qrcode');
-
-      axios.get(`${baseUrl}/api/sign-in`)
-        .then((data) => {
-          console.log(data);
-
-          // eslint-disable-next-line no-new
-          new window.QRCode(qrCodeRef.current, {
-            text: JSON.stringify(data),
-            width: 300,
-            height: 300,
-            colorDark: '#000',
-            colorLight: '#e9e9e9',
-            correctLevel: window.QRCode.CorrectLevel.H,
-          });
-          handleDisplay(qrCodeEl, true);
-        })
-
-        .catch((err) => console.log(err));
-    }
+    axios.get(`${baseUrl}/api/sign-in`)
+      .then((data) => {
+        setQrData(JSON.stringify(data.data));
+      })
+      .catch((err) => console.log(err));
   }, []);
 
   return (
-    <>
-      <script src="../../public/qrcode.min.js" />
-      <div>
-        <div ref={qrCodeRef} />
-      </div>
-    </>
+    <div>
+      <QRCodeSVG
+        value={qrData}
+        size={300}
+        bgColor="#ffffff"
+        fgColor="#000000"
+        level="L"
+        // includeMargin={false}
+        imageSettings={{
+          // x: undefined,
+          // y: undefined,
+          height: 300,
+          width: 300,
+          // excavate: true,
+        }}
+      />
+    </div>
   );
 }

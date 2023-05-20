@@ -15,6 +15,9 @@ export default function MintedPage() {
       <StyledLink to="/ivfm/inventory">
         Go to my inventory
       </StyledLink>
+      <StyledLink to="https://testnets.opensea.io/collection/incense-nft">
+        Go to my OpenSea
+      </StyledLink>
     </Container>
   );
 }

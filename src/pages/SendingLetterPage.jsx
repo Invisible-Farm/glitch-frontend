@@ -1,15 +1,34 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import styled from 'styled-components';
+import { QRCodeSVG } from 'qrcode.react';
 
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useLocalStorage } from 'usehooks-ts';
+import axios from 'axios';
 import { Petal } from '../assets/images';
 import { apiService } from '../services/ApiService';
 
 import useLetterFormStore from '../hooks/useLetterFormStore';
 
 export default function SendingLetterPage() {
+  const baseUrl = 'http://3.26.13.71:10011';
+  const [qrData, setQrData] = useState('');
+
+  useEffect(() => {
+    axios.get(`${baseUrl}/api/sign-in`)
+      .then((data) => {
+        setQrData(JSON.stringify(data.data));
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
+
   const navigate = useNavigate();
 
   const letterFormStore = useLetterFormStore();
@@ -78,6 +97,7 @@ export default function SendingLetterPage() {
               <select
                 name="values"
                 id="input-community"
+                onClick={toggleMenu}
                 onChange={(e) => letterFormStore.changeField((
                   { community: e.target.value }))}
               >
@@ -228,11 +248,40 @@ export default function SendingLetterPage() {
           NEXT
         </NextButton>
       </ButtonWrapper>
+      {isOpen && (
+        <ModalWrapper>
+          <ModalContent>
+            <QRCodeSVG
+              value={qrData}
+              size={300}
+              bgColor="#ffffff"
+              fgColor="#000000"
+              level="L"
+              // includeMargin={false}
+              imageSettings={{
+                // x: undefined,
+                // y: undefined,
+                height: 300,
+                width: 300,
+                // excavate: true,
+              }}
+            />
+            <button
+              type="button"
+              onClick={toggleMenu}
+            >
+              삭제
+            </button>
+          </ModalContent>
+        </ModalWrapper>
+      )}
     </Container>
   );
 }
 
 const Container = styled.div`
+  position: relative;
+
   padding: 50px 100px;
 
   select option {
@@ -432,3 +481,28 @@ const NextButton = styled.button`
   font-weight: 600;
   font-size: 20px;
 `;
+
+const ModalWrapper = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  border-radius: 20px;
+  box-shadow: 7px 7px 8px rgba(0, 0, 0, 0.5);
+  background-color: white;
+
+  width: 360px;
+  height: 370px;
+
+  padding: 30px;
+
+  button {
+    color: transparent;
+    cursor: default;
+    width: 200px;
+    height: 24px;
+  }
+`;
+
+const ModalContent = styled.div``;
