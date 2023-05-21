@@ -25,8 +25,8 @@ export default function SendingLetterPage() {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
+  const toggleQrCode = () => {
+    setIsOpen(true);
   };
 
   const navigate = useNavigate();
@@ -97,7 +97,7 @@ export default function SendingLetterPage() {
               <select
                 name="values"
                 id="input-community"
-                onClick={toggleMenu}
+                onClick={toggleQrCode}
                 onChange={(e) => letterFormStore.changeField((
                   { community: e.target.value }))}
               >
@@ -266,12 +266,6 @@ export default function SendingLetterPage() {
                 // excavate: true,
               }}
             />
-            <button
-              type="button"
-              onClick={toggleMenu}
-            >
-              삭제
-            </button>
           </ModalContent>
         </ModalWrapper>
       )}
